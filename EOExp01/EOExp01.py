@@ -8,7 +8,7 @@ fig1 = plt.figure(figsize=(12,6))
 ax1 = fig1.add_axes([0.1, 0.1, 0.8, 0.8])
 
 ax1.set_title('Plot of laser power to current')
-ax1.axis([0.3, 1, 0, 60])
+ax1.axis([0.25, 1, 0, 60])
 ax1.set_xlabel(r'current $\rm{(A)}$')
 ax1.set_ylabel(r'laser power $\rm{(mw)}$')
 
@@ -17,8 +17,14 @@ current = [0.95-0.05*i for i in current]
 power1 = [58.3, 53.2, 46.8, 41.2, 35.5, 28.6, 26.4, 21.5, 20, 16, 11.8, 6.6, 3.6]
 power2 = [47, 44.2, 41.2, 38.5, 34.8, 30.8, 26.9, 22.7, 21.4, 16.7, 12.1, 7.5, 3.8]
 
+trend_current = [0, 1]
+trend1 = [107.6*x-44.449 for x in trend_current]
+trend2 = [69.405*x-18.026 for x in trend_current]
+
 ax1.plot(current, power1, linestyle='-', marker='o', color=colors[0], label='95%')
 ax1.plot(current, power2, linestyle='-', marker='o', color=colors[1], label='90%')
+ax1.plot(trend_current, trend1, linewidth=0.5, linestyle='--', marker='', color=colors[0], label='')
+ax1.plot(trend_current, trend2, linewidth=0.5, linestyle='--', marker='', color=colors[1], label='')
 ax1.legend()
 fig1.savefig('fig1.png')
 
