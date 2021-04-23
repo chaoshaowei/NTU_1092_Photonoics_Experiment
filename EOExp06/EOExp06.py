@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 import numpy as np
 import os
 import csv
@@ -10,6 +11,11 @@ titles = ['measured power to angle difference', 'measured power to angle differe
 xlabels = [r'Angle difference $\rm{(deg)}$', r'Angle difference $\rm{(deg)}$', r'Applied voltage $\rm{(V)}$']
 ylabels = [r'Measured power $\rm{(mw)}$', r'Measured power $\rm{(mw)}$', r'Measured power $\rm{(mw)}$']
 legends = [['Linear polarization'], [r'$\lambda/2$', r'$\lambda/4$'], ['Normal white liquid crystal']]
+major_locators = [90, 90, 1]
+minor_locators = [10, 45, 1]
+xmins = [0, 0, 0]
+xmaxs = [360, 360, 7]
+formatters = [r'{x:.0f}$^\circ$', r'{x:.0f}$^\circ$', r'{x:.0f}']
 
 # plt stuffs
 figs = []
@@ -35,6 +41,10 @@ for i in range(3):
         axes[i].plot(x_datas, y_datas[j-1], label=legends[i][j-1], color=colors[j-1])
     
     axes[i].legend(loc='upper right')
+    axes[i].xaxis.set_major_locator(MultipleLocator(major_locators[i]))
+    axes[i].xaxis.set_minor_locator(MultipleLocator(minor_locators[i]))
+    axes[i].set_xlim(xmin=xmins[i], xmax=xmaxs[i])
+    axes[i].xaxis.set_major_formatter(formatters[i])
     figs[i].savefig(os.path.join(working_dir, f'fig{i+1}.png'))
 
 plt.show()
