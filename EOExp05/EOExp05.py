@@ -51,7 +51,6 @@ for i in range(len(filenames)):
         
     if i >= 2:
         fit = scipy.optimize.curve_fit(lambda t,a,b: a+b*t,  x_data[1000:],  y_data[1000:],  p0=(1, 0.1))
-        print(f' {fit[0][0]:.4f} + {fit[0][1]:.4f} * v')
         axes[i].plot([i for i in np.arange(x_data[1000], x_data[-1], 0.01)], [fit[0][0]+fit[0][1]*i for i in np.arange(x_data[1000], x_data[-1], 0.01)], label=r'fit curve for $R_{S}$', color=colors[5], linewidth=3)
         axes[i].plot([i for i in np.arange(x_data[250], x_data[-1], 0.01)], [fit[0][0]+fit[0][1]*i for i in np.arange(x_data[250], x_data[-1], 0.01)], linestyle='--', color=colors[5])
 
@@ -60,15 +59,14 @@ for i in range(len(filenames)):
         else:
             axes[i].text(2.5, 0.008, rf'$I_d={fit[0][0]:.4f} + {fit[0][1]:.4f} * V_d$', fontsize=14, color=colors[5])
 
-        fit = scipy.optimize.curve_fit(lambda t,a,b,c: np.exp(a+b*t)-c,  x_data[3:150], y_data[3:150], p0=(-10, 0.01, 0.001), maxfev=4000)
-        print(f'exp ( {fit[0][0]:.4f} + {fit[0][1]:.4f} * v ) - {fit[0][2]:.4f}')
-        axes[i].plot([i for i in np.arange(x_data[3], x_data[150], 0.01)], [np.exp(fit[0][0]+fit[0][1]*i)-fit[0][2] for i in np.arange(x_data[3], x_data[150], 0.01)], label=r'fit curve for $n$', color=colors[9], linewidth=3)
-        axes[i].plot([i for i in np.arange(x_data[0], x_data[600], 0.01)], [np.exp(fit[0][0]+fit[0][1]*i)-fit[0][2] for i in np.arange(x_data[0], x_data[600], 0.01)], linestyle='--', color=colors[9])
+        fit = scipy.optimize.curve_fit(lambda t,a,b: np.exp(a+b*t),  x_data[3:50], y_data[3:50], p0=(-10, 0.01), maxfev=4000)
+        axes[i].plot([i for i in np.arange(x_data[3], x_data[50], 0.01)], [np.exp(fit[0][0]+fit[0][1]*i) for i in np.arange(x_data[3], x_data[50], 0.01)], label=r'fit curve for $n$', color=colors[9], linewidth=3)
+        axes[i].plot([i for i in np.arange(x_data[0], x_data[300], 0.01)], [np.exp(fit[0][0]+fit[0][1]*i) for i in np.arange(x_data[0], x_data[300], 0.01)], linestyle='--', color=colors[9])
 
         if(i==2):
-            axes[i].text(2.2, 0.02, rf'$I_d=e^{{({fit[0][0]:.4f} + {fit[0][1]:.4f} * V_d)}}-{fit[0][2]:.4f}$', fontsize=14, color=colors[9])
+            axes[i].text(2.2, 0.02, rf'$I_d=e^{{({fit[0][0]:.4f} + {fit[0][1]:.4f} * V_d)}}$', fontsize=14, color=colors[9])
         else:
-            axes[i].text(2.2, 0.002, rf'$I_d=e^{{({fit[0][0]:.4f} + {fit[0][1]:.4f} * V_d)}}-{fit[0][2]:.4f}$', fontsize=14, color=colors[9])
+            axes[i].text(2.2, 0.002, rf'$I_d=e^{{({fit[0][0]:.4f} + {fit[0][1]:.4f} * V_d)}}$', fontsize=14, color=colors[9])
         
     axes[i].xaxis.set_major_locator(MultipleLocator(major_locators[i]))
     axes[i].xaxis.set_minor_locator(MultipleLocator(minor_locators[i]))
