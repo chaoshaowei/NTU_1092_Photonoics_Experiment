@@ -11,9 +11,9 @@ filenames = [
     [os.path.join('Data', 'Crystal LED', f'Crystal_LED_{i:03d}ma.Master.Scope') for i in range(10, 110, 10)],
     [os.path.join('Data', 'Market LED', f'Market_LED_{i:02d}ma.Master.Scope') for i in range(1, 11)],
 ]
-titles = ['EQE of Crystal LED', 'EQE of Market LED']
-xlabels = [r'Current $I_d \rm{(A)}$', r'Current $I_d \rm{(A)}$']
-ylabels = [r'EQE (unit unknown)', r'EQE (unit unknown)']
+titles = ['EQE of Crystal LED', 'EQE of Market LED', 'EQE of both LEDs']
+xlabels = [r'Current $I_d \rm{(A)}$', r'Current $I_d \rm{(A)}$', r'Current $I_d \rm{(A)}$']
+ylabels = [r'EQE, compare to max value (%)', r'EQE, compare to max value (%)', r'EQE, unit unknown']
 legends = [['Crystal LED'], ['Market LED']]
 major_locators = [10, 1]
 minor_locators = [10, 1]
@@ -38,12 +38,14 @@ y_values = []
 # Axes parameters
 left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
 
+for i in range(3):
+    figs.append(plt.figure(figsize=(12, 6)))
+    axes.append(figs[i].add_axes([left, bottom, width, height]))
+
 for i in range(len(filenames)):
     y_datas = []
     x_values.append([])
     y_values.append([])
-    figs.append(plt.figure(figsize=(12, 6)))
-    axes.append(figs[i].add_axes([left, bottom, width, height]))
     axes[i].set_title(f'{titles[i]}')
     axes[i].set_xlabel(xlabels[i])
     axes[i].set_ylabel(ylabels[i])
@@ -56,11 +58,24 @@ for i in range(len(filenames)):
         base = sum(y_data[650:])/len(y_data[650:])
         y_values[i].append( (sum(y_data)-base*len(y_data)) / (1e-3*minor_locators[i]*(j+1)*exposure_time*electons_per_C))
 
-    axes[i].plot(x_values[i], y_values[i], label=legends[i][0], color=colors[i])
-        
+
+    axes[2].set_title(f'{titles[2]}')
+    axes[2].set_xlabel(xlabels[2])
+    axes[2].set_ylabel(ylabels[2])
+    axes[2].plot(x_values[i], y_values[i], label=legends[i][0], color=colors[i*9])
+    axes[2].xaxis.set_major_locator(MultipleLocator(major_locators[0]))
+    axes[2].set_xlim(xmin=0, xmax=100)
+    #axes[2].set_ylim(ymin=0)
+    axes[2].xaxis.set_major_formatter(formatters[0])
+    axes[2].legend(loc='upper right')
+    figs[2].savefig(os.path.join(working_dir, f'fig{7}.png'))
+    y_values[i] = [(y / max(y_values[i]) * 100) for y in y_values[i]]
+
+    axes[i].plot(x_values[i], y_values[i], label=legends[i][0], color=colors[i*9])
     axes[i].xaxis.set_major_locator(MultipleLocator(major_locators[i]))
     axes[i].xaxis.set_minor_locator(MultipleLocator(minor_locators[i]))
     axes[i].set_xlim(xmin=xmins[i], xmax=xmaxs[i])
+    axes[i].set_ylim(ymin=0)
     axes[i].xaxis.set_major_formatter(formatters[i])
     axes[i].legend(loc='upper right')
     figs[i].savefig(os.path.join(working_dir, f'fig{i+5}.png'))
